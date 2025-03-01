@@ -3,11 +3,14 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, ShoppingBag, User, Menu, X } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { useCart } from '@/context/CartContext';
+import { Badge } from '@/components/ui/badge';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const { cartCount } = useCart();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,8 +33,8 @@ const Navbar = () => {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
-    { name: 'Vendors', path: '/vendors' },
     { name: 'Categories', path: '/categories' },
+    { name: 'Vendors', path: '/vendors' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -75,16 +78,40 @@ const Navbar = () => {
             <Button variant="ghost" size="icon" className="rounded-full">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <User className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="rounded-full" asChild>
+              <Link to="/signin">
+                <User className="h-5 w-5" />
+              </Link>
             </Button>
-            <Button variant="ghost" size="icon" className="rounded-full">
-              <ShoppingBag className="h-5 w-5" />
+            <Button variant="ghost" size="icon" className="rounded-full relative" asChild>
+              <Link to="/cart">
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 flex items-center justify-center">
+                    {cartCount}
+                  </Badge>
+                )}
+              </Link>
             </Button>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full relative mr-2"
+              asChild
+            >
+              <Link to="/cart">
+                <ShoppingBag className="h-5 w-5" />
+                {cartCount > 0 && (
+                  <Badge className="absolute -top-1 -right-1 px-1.5 py-0.5 min-w-[20px] h-5 flex items-center justify-center">
+                    {cartCount}
+                  </Badge>
+                )}
+              </Link>
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -118,17 +145,17 @@ const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+            <Link
+              to="/signin"
+              className="block px-3 py-2 rounded-md text-base font-medium text-gray-600 hover:text-black hover:bg-gray-50"
+            >
+              Sign In
+            </Link>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center justify-around px-5">
               <Button variant="ghost" size="icon" className="rounded-full">
                 <Search className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <User className="h-5 w-5" />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full">
-                <ShoppingBag className="h-5 w-5" />
               </Button>
             </div>
           </div>
