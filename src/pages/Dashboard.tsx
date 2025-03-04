@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Chart } from '@/components/ui/chart';
+import { Chart } from '@/components/ui/CustomChart';
 import { 
   Table, 
   TableBody, 
