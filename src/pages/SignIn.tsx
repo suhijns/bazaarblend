@@ -47,7 +47,8 @@ const SignIn = () => {
         title: "Success",
         description: "You have successfully signed in",
       });
-      navigate('/');
+      // Redirect to dashboard instead of home page
+      navigate('/dashboard');
     }, 1500);
   };
 
