@@ -1,9 +1,11 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTransition } from '@/utils/animations';
 import { toast } from 'sonner';
 import { products } from '@/data/mockData';
 import { DashboardStats, Order, SalesData } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 
 // Import components
 import { Sidebar } from '@/components/dashboard/Sidebar';
@@ -150,13 +152,54 @@ const Dashboard = () => {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [salesData, setSalesData] = useState<SalesData[]>(mockSalesData);
   const [activeTab, setActiveTab] = useState('overview');
+  const [user, setUser] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  
   const navigate = useNavigate();
   const isVisible = usePageTransition();
 
   useEffect(() => {
+    // Check if user is authenticated
+    const checkAuth = async () => {
+      setLoading(true);
+      
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        
+        if (!user) {
+          // Redirect to sign-in page if not authenticated
+          navigate('/signin', { replace: true });
+          return;
+        }
+        
+        setUser(user);
+      } catch (error) {
+        console.error('Error checking authentication:', error);
+        navigate('/signin', { replace: true });
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    checkAuth();
+    
+    // Also subscribe to auth changes
+    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_OUT') {
+        navigate('/signin', { replace: true });
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        setUser(session.user);
+      }
+    });
+    
     // Scroll to top on component mount
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Clean up subscription
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [navigate]);
 
   const handleUpdateOrderStatus = (orderId: string, newStatus: Order['status']) => {
     setOrders(prevOrders => 
@@ -169,6 +212,17 @@ const Dashboard = () => {
     
     toast.success(`Order ${orderId} status updated to ${newStatus}`);
   };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p>Loading dashboard...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen bg-gray-50">
