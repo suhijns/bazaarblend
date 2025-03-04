@@ -1,4 +1,4 @@
-<lov-code>
+
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -883,3 +883,4 @@ const Dashboard = () => {
   );
 };
 
+export default Dashboard;
