@@ -16,6 +16,14 @@ import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import Sales from "./pages/Sales";
+import AboutUs from "./pages/AboutUs";
+import Careers from "./pages/Careers";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
+import Cookies from "./pages/Cookies";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,7 +47,14 @@ const App = () => (
             <Route path="/order-success" element={<OrderSuccess />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="/sales" element={<Sales />} />
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/cookies" element={<Cookies />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
