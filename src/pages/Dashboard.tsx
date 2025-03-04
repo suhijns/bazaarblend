@@ -1,4 +1,4 @@
-
+<lov-code>
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
@@ -487,8 +487,7 @@ const Dashboard = () => {
                               'rgba(153, 102, 255, 0.7)',
                               'rgba(75, 192, 192, 0.7)',
                               'rgba(255, 99, 132, 0.7)'
-                            ],
-                            borderWidth: 1
+                            ]
                           }
                         ]
                       }}
@@ -884,4 +883,3 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;

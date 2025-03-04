@@ -4,7 +4,6 @@ import {
   Line,
   Bar,
   Pie,
-  Doughnut,
   Area,
   Scatter,
   ResponsiveContainer,
@@ -74,9 +73,12 @@ export const Chart = ({ type, data, options, className }: ChartProps) => {
           />
         );
       case "doughnut":
+        // Use Pie with innerRadius for doughnut chart since recharts doesn't have a Doughnut component
         return (
-          <Doughnut
+          <Pie
             data={transformDataForPie(data)}
+            innerRadius={60}
+            outerRadius={80}
             {...getChartOptions(options)}
           />
         );
