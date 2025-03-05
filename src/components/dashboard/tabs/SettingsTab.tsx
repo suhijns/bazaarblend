@@ -40,7 +40,7 @@ export const SettingsTab = () => {
           setUser(user);
           setEmail(user.email || '');
           
-          // Fetch additional user profile data if available
+          // Fetch additional user profile data from the profiles table
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
