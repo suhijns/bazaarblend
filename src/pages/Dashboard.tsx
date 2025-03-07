@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTransition } from '@/utils/animations';
@@ -169,7 +170,8 @@ const Dashboard = () => {
         } else {
           setUser({ id: 'mock-user-id' });
           
-          await supabase.auth.updateSession({
+          // Use the correct method to set a mock session
+          await supabase.auth.setSession({
             access_token: 'mock_token',
             refresh_token: 'mock_refresh_token',
           });

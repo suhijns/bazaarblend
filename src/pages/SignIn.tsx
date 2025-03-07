@@ -25,8 +25,8 @@ const SignIn = () => {
   // Add useEffect to handle mock authentication
   useEffect(() => {
     const setMockSession = async () => {
-      // Set a mock session in Supabase
-      await supabase.auth.updateSession({
+      // Set a mock session in Supabase using the correct method
+      await supabase.auth.setSession({
         access_token: 'mock_token',
         refresh_token: 'mock_refresh_token',
       });
