@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { categories } from '@/data/mockData';
 import { usePageTransition } from '@/utils/animations';
+import { Store, ArrowRight } from 'lucide-react';
 
 const Hero = () => {
   const isVisible = usePageTransition();
@@ -67,8 +68,12 @@ const Hero = () => {
             <Button asChild size="lg" className="bg-white text-black hover:bg-white/90">
               <Link to="/products">Shop Now</Link>
             </Button>
-            <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white/10">
-              <Link to="/vendors">Explore Vendors</Link>
+            <Button asChild size="lg" variant="outline" className="text-white border-white hover:bg-white/10 group relative overflow-hidden">
+              <Link to="/vendors" className="flex items-center">
+                <span className="mr-2">Explore Vendors</span>
+                <Store className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                <span className="absolute inset-0 bg-gradient-to-r from-purple-500/0 to-purple-500/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+              </Link>
             </Button>
           </div>
         </div>
