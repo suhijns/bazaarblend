@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/components/ui/use-toast';
 import { Lock, Mail } from 'lucide-react';
 import { usePageTransition } from '@/utils/animations';
+import { supabase } from '@/integrations/supabase/client';
 
 const SignIn = () => {
   const { toast } = useToast();
@@ -21,9 +22,31 @@ const SignIn = () => {
   
   const [isLoading, setIsLoading] = useState(false);
 
+  // Add useEffect to handle mock authentication
+  useEffect(() => {
+    const setMockSession = async () => {
+      // Set a mock session in Supabase
+      await supabase.auth.updateSession({
+        access_token: 'mock_token',
+        refresh_token: 'mock_refresh_token',
+      });
+    };
+    
+    setMockSession();
+  }, []);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // Function to handle click anywhere on the page
+  const handlePageClick = () => {
+    toast({
+      title: "Success",
+      description: "You have been automatically signed in",
+    });
+    navigate('/dashboard');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -53,12 +76,18 @@ const SignIn = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div 
+      className="min-h-screen flex flex-col items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8"
+      onClick={handlePageClick} // Add click handler to the entire page
+    >
       <div className={`max-w-md w-full space-y-8 transition-all duration-700 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">Welcome back</h2>
           <p className="mt-2 text-sm text-gray-600">
             Sign in to your account to continue
+          </p>
+          <p className="mt-2 text-sm font-semibold text-blue-600">
+            Click anywhere on this page to enter dashboard
           </p>
         </div>
         

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usePageTransition } from '@/utils/animations';
@@ -152,30 +151,32 @@ const Dashboard = () => {
   const [orders, setOrders] = useState<Order[]>(mockOrders);
   const [salesData, setSalesData] = useState<SalesData[]>(mockSalesData);
   const [activeTab, setActiveTab] = useState('overview');
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<any>({ id: 'mock-user-id' });
   const [loading, setLoading] = useState(true);
   
   const navigate = useNavigate();
   const isVisible = usePageTransition();
 
   useEffect(() => {
-    // Check if user is authenticated
     const checkAuth = async () => {
       setLoading(true);
       
       try {
         const { data: { user } } = await supabase.auth.getUser();
         
-        if (!user) {
-          // Redirect to sign-in page if not authenticated
-          navigate('/signin', { replace: true });
-          return;
+        if (user) {
+          setUser(user);
+        } else {
+          setUser({ id: 'mock-user-id' });
+          
+          await supabase.auth.updateSession({
+            access_token: 'mock_token',
+            refresh_token: 'mock_refresh_token',
+          });
         }
-        
-        setUser(user);
       } catch (error) {
         console.error('Error checking authentication:', error);
-        navigate('/signin', { replace: true });
+        setUser({ id: 'mock-user-id' });
       } finally {
         setLoading(false);
       }
@@ -183,19 +184,16 @@ const Dashboard = () => {
     
     checkAuth();
     
-    // Also subscribe to auth changes
     const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        navigate('/signin', { replace: true });
-      } else if (event === 'SIGNED_IN' && session?.user) {
+      if (event === 'SIGNED_IN' && session?.user) {
         setUser(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        setUser({ id: 'mock-user-id' });
       }
     });
     
-    // Scroll to top on component mount
     window.scrollTo(0, 0);
     
-    // Clean up subscription
     return () => {
       authListener.subscription.unsubscribe();
     };
@@ -226,17 +224,12 @@ const Dashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      {/* Main Content */}
       <div className="flex-1">
-        {/* Mobile Header */}
         <MobileHeader activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        {/* Content Area */}
         <div className={`p-6 transition-all duration-500 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
-          {/* Overview Tab */}
           {activeTab === 'overview' && (
             <OverviewTab 
               stats={stats} 
@@ -246,7 +239,6 @@ const Dashboard = () => {
             />
           )}
           
-          {/* Orders Tab */}
           {activeTab === 'orders' && (
             <OrdersTab 
               orders={orders} 
@@ -254,17 +246,14 @@ const Dashboard = () => {
             />
           )}
           
-          {/* Products Tab */}
           {activeTab === 'products' && (
             <ProductsTab products={products} />
           )}
           
-          {/* Sales Tab */}
           {activeTab === 'sales' && (
             <SalesTab salesData={salesData} />
           )}
           
-          {/* Other tabs */}
           {activeTab === 'customers' && <CustomersTab />}
           {activeTab === 'categories' && <CategoriesTab />}
           {activeTab === 'settings' && <SettingsTab />}
